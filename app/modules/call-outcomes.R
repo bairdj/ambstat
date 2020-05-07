@@ -24,18 +24,26 @@ callOutcomes <- function(input, output, session, ambsys) {
   output$hearTreat <- renderPlotly({
     data() %>%
       group_by(Ambulance.Service) %>%
-      summarise(HearTreat = sum(A17)/sum(A7)*100) %>%
+      summarise(
+        HearTreat = sum(A17)/sum(A7)*100,
+        Referred = (sum(A19)+sum(A22))/sum(A7)*100,
+        Advice = (sum(A18)+sum(A21))/sum(A7)*100,
+        ) %>%
       plot_ly(
         x=~Ambulance.Service,
-        y=~HearTreat
+        y=~Advice,
+        name="Closed with advice",
+        type="bar"
       ) %>%
+      add_trace(y=~Referred,name="Referred to other service") %>%
       layout(
         xaxis = list(
           title = list(text="Ambulance service")
         ),
         yaxis = list(
           title = list(text="%")
-        )
+        ),
+        barmode = "stack"
       )
   })
   
