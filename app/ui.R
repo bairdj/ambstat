@@ -6,6 +6,7 @@ navbarPage(fluid = FALSE, theme=shinytheme("flatly"), collapsible = TRUE,
   "AmbStat",
   tabPanel("Cardiac Arrest", cardiacArrestUi("cardiacArrest", min(ambco$Date), max(ambco$Date))),
   tabPanel("STEMI", stemiUi("stemi", min(stemiPeriod), max(stemiPeriod))),
+  tabPanel("Call Outcomes", callOutcomesUi("callOutcomes")),
   footer = tagList(
     wellPanel(
       p(

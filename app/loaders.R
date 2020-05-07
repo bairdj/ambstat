@@ -47,7 +47,7 @@ load_ambco <- function() {
 
 ambstatify <- function(.data) {
   return(.data %>% filter(startsWith(`Org Code`, "R")) %>% # Exclude regions (Yxx)
-           mutate(`Org Name` = str_remove(`Org Name`, " (AMBULANCE SERVICE )*NHS (FOUNDATION )*TRUST")) %>% # Simplify names
+           mutate(`Org Name` = str_remove(`Org Name`, " (AMBULANCE SERVICE )*(UNIVERSITY )*NHS (FOUNDATION )*TRUST")) %>% # Simplify names
            mutate(ym = Year + (Month - 1) * 1/12) %>% # For use with xts yearmon
            mutate(Date = ymd(paste(Year, Month, "01", sep = "-"))) %>%
            rename(Ambulance.Service = `Org Name`))

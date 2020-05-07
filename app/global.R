@@ -15,3 +15,4 @@ ambco <- load_ambco()
 
 source("./modules/stemi.R")
 source("./modules/cardiac-arrest.R")
+source("./modules/call-outcomes.R")
