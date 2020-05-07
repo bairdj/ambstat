@@ -88,7 +88,15 @@ stemi <- function(input, output, session, ambco) {
   
   output$callToBalloonChart <- renderPlotly({
     ppci() %>%
-      plot_ly(type="bar", x=~Ambulance.Service, y=~CallToBalloon)
+      plot_ly(type="bar", x=~Ambulance.Service, y=~CallToBalloon) %>%
+      layout(
+        yaxis = list(
+          title = list(text="Time (minutes)")
+        ),
+        xaxis = list(
+          title = list(text="Ambulance service")
+        )
+      )
   })
   
   output$ppciTimeSeries <- renderPlotly({
