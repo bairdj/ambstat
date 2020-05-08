@@ -1,16 +1,29 @@
 callOutcomesUi <- function(id) {
   ns <- NS(id)
   
-  sidebarLayout(
-    sidebarPanel(
-      dateRangeInput(ns("date"), "Search Period", format = "m/yyyy", start = today() - dyears())
+  tagList(
+    sidebarLayout(
+      sidebarPanel(
+        dateRangeInput(ns("date"), "Search Period", format = "m/yyyy", start = today() - dyears())
+      ),
+      mainPanel(
+        h1("Call outcomes by ambulance service"),
+        tabsetPanel(
+          tabPanel("Hear & Treat", plotlyOutput(ns("hearTreat"))),
+          tabPanel("See & Treat", plotlyOutput(ns("seeTreat"))),
+          tabPanel("Flow", plotlyOutput(ns("flow")))
+        )
+      )
     ),
-    mainPanel(
-      h1("Call outcomes by ambulance service"),
-      tabsetPanel(
-        tabPanel("Hear & Treat", plotlyOutput(ns("hearTreat"))),
-        tabPanel("See & Treat", plotlyOutput(ns("seeTreat"))),
-        tabPanel("Flow", plotlyOutput(ns("flow")))
+    fixedRow(
+      column(offset=4, width=8, h1("Hear & Treat Trend"))
+    ),
+    sidebarLayout(
+      sidebarPanel(
+        selectInput(ns("service"), "Service", service_list)
+      ),
+      mainPanel(
+        plotlyOutput(ns("ts"))
       )
     )
   )
@@ -83,4 +96,27 @@ callOutcomes <- function(input, output, session, ambsys) {
       )
     )
   })
+  
+  output$ts <- renderPlotly({
+    df <- ambsys
+    if (input$service != "All") {
+      df <- df %>% filter(Ambulance.Service == input$service)
+    }
+    df %>%
+      drop_na(A17,A7,A19,A22,A21) %>%
+      group_by(Date) %>%
+      summarise(
+        HearTreat = sum(A17)/sum(A7)*100,
+        Referred = (sum(A19)+sum(A22))/sum(A7)*100,
+        Advice = (sum(A18)+sum(A21))/sum(A7)*100) %>%
+      plot_ly(x=~Date,y=~Advice, name="Advice", type="scatter", mode="none", stackgroup="ht") %>%
+      add_trace(y=~Referred, name="Referred", stackgroup="ht") %>%
+      layout(
+        yaxis = list(
+          title = list(text="%")
+        )
+      )
+  })
+  
+  
 }
