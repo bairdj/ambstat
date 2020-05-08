@@ -23,7 +23,7 @@ cardiacArrestUi <- function(id, startDate, endDate) {
         p("Only months with complete data are included. This may not reflect the full specified search period.")
       )
     ),
-    h1("Trend"),
+    h1("ROSC Trend"),
     sidebarLayout(
       sidebarPanel(
         selectInput(
