@@ -6,3 +6,7 @@ jobs:
     steps:
       - setup_remote_docker
       - run: docker build -t bairdj/ambstat:$CIRCLE_BRANCH
+workflows:
+  build:
+    jobs:
+      - build_docker
