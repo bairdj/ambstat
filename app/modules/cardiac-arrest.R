@@ -42,6 +42,8 @@ cardiacArrest <- function(input, output, session, ambco) {
   monthRange <- callModule(monthRange, "month", ambco %>% drop_na(R1r, R1n, R2n, R2r, R3s, R3n, R4n, R4s) %>% pull(Date))
   
   data <- reactive({
+      req(monthRange$start())
+      req(monthRange$end())
       ambco %>% filter(Date >= monthRange$start(), Date <= monthRange$end())
   })
   

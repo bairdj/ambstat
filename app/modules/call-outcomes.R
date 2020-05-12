@@ -34,6 +34,8 @@ callOutcomes <- function(input, output, session, ambsys) {
   monthRange <- callModule(monthRange, "month", ambsys %>% drop_na(A7,A56,A17,A53,A54,A55,A18,A19,A21,A22) %>% pull(Date))
   
   data <- reactive({
+    req(monthRange$start())
+    req(monthRange$end())
     ambsys %>% filter(Date >= monthRange$start(), Date <= monthRange$end())
   })
   

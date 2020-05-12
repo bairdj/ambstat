@@ -21,6 +21,8 @@ responseTimesUi <- function(id) {
 responseTimes <- function(input, output, session, ambsys, plt) {
   
   meanResponseTs <- reactive({
+    req(monthRange$start())
+    req(monthRange$end())
     d <- ambsys %>% group_by(Date, Ambulance.Service) %>%
       filter(Date >= monthRange$start(), Date <= monthRange$end())
     category <- as.integer(input$category)
@@ -36,6 +38,8 @@ responseTimes <- function(input, output, session, ambsys, plt) {
   })
   
   response90Ts <- reactive({
+    req(monthRange$start())
+    req(monthRange$end())
     d <- ambsys %>% group_by(Date, Ambulance.Service) %>%
       filter(Date >= monthRange$start(), Date <= monthRange$end())
     category <- as.integer(input$category)

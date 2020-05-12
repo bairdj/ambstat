@@ -42,6 +42,8 @@ stemi <- function(input, output, session, ambco) {
   monthRange <- callModule(monthRange, "month", ambco %>% drop_na(M1n, M3n, M3m) %>% pull(Date))
   
   ppci <- reactive({
+    req(monthRange$start())
+    req(monthRange$end())
     ambco %>%
       drop_na(M1n,M3n,M3m) %>%
       filter(Date >= monthRange$start(), Date <= monthRange$end()) %>%

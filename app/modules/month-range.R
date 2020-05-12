@@ -17,14 +17,13 @@ monthRange <- function(input, output, session, vector) {
     list(
       start=reactive({
         if (str_length(input$startMonth) == 0) {
-          "1900-01-01"
+          NULL
         } else {
           input$startMonth
-        }
-      }),
+      }}),
       end=reactive({
         if (str_length(input$endMonth) == 0) {
-          "2050-01-01" 
+          NULL 
         } else {
           input$endMonth
         }
