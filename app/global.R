@@ -6,6 +6,8 @@ library(dplyr)
 library(plotly)
 library(readr)
 library(stringr)
+library(ggplot2)
+library(ggthemes)
 
 service_list = c("All", "EAST MIDLANDS", "EAST OF ENGLAND", "ISLE OF WIGHT", "LONDON", "NORTH EAST", "NORTH WEST", "SOUTH CENTRAL", "SOUTH WESTERN", "WEST MIDLANDS", "YORKSHIRE")
 
@@ -16,3 +18,4 @@ ambco <- load_ambco()
 source("./modules/stemi.R")
 source("./modules/cardiac-arrest.R")
 source("./modules/call-outcomes.R")
+source("./modules/response-times.R")

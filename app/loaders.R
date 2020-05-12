@@ -12,7 +12,21 @@ ambsys_cols <- cols_only(
   A19 = col_integer(),
   A21 = col_integer(),
   A22 = col_integer(),
-  A7 = col_integer()
+  A7 = col_integer(),
+  A8 = col_integer(),
+  A9 = col_integer(),
+  A10 = col_integer(),
+  A11 = col_integer(),
+  A12 = col_integer(),
+  A24 = col_integer(),
+  A27 = col_integer(),
+  A30 = col_integer(),
+  A33 = col_integer(),
+  A36 = col_integer(),
+  A26 = col_integer(),
+  A32 = col_integer(),
+  A35 = col_integer(),
+  A38 = col_integer()
 )
 
 load_ambsys <- function() {
