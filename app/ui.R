@@ -12,10 +12,10 @@ navbarPage(fluid = TRUE, theme=shinytheme("flatly"), collapsible = TRUE,
     wellPanel(
       p(
         "All data sourced from ",
-        a(href="https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/", "NHS England - Ambulance Quality Indicators")
+        a(target="_blank", href="https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/", "NHS England - Ambulance Quality Indicators")
       ),
       p("Created by James Baird - Paramedic"),
-      a(href="https://github.com/bairdj/ambstat", "Github")
+      a(href="https://github.com/bairdj/ambstat", target="_blank", "Github")
     )
   )
 )
