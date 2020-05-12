@@ -10,7 +10,8 @@ responseTimesUi <- function(id) {
       mainPanel(
         tabsetPanel(
           tabPanel("Mean", plotOutput(ns("meanResponsePlot"), height=600)),
-          tabPanel("90% percentile", plotOutput(ns("response90Plot"), height=600))
+          tabPanel("90% percentile", plotOutput(ns("response90Plot"), height=600)),
+          tabPanel("Monthly Performance", p("Proportion of months where performance target met"), tableOutput(ns("monthlyPerformance")))
         ),
         plotOutput(ns("responsePlot"))
       )
@@ -107,4 +108,17 @@ responseTimes <- function(input, output, session, ambsys, plt) {
   })
   
   monthRange <- callModule(monthRange, "month", ambsys %>% drop_na(A24,A8,A30,A10,A33,A11,A36,A12) %>% pull(Date))
+  
+  output$monthlyPerformance <- renderTable({
+    req(monthRange$start())
+    req(monthRange$end())
+    ambsys %>% drop_na(A24,A8,A30,A10, A38, A35) %>%
+      filter(Date >= monthRange$start(), Date <= monthRange$end()) %>%
+      group_by(Ambulance.Service, Date) %>%
+      summarise(C1Mean = first(A24)/first(A8), C2Mean = first(A30)/first(A10), C390 = first(A35), C490 = first(A38)) %>%
+      group_by(Ambulance.Service) %>%
+      summarise(C1Mean = sum(C1Mean < 7*60)/n(), C2Mean = sum(C2Mean < 18*60)/n(), C390 = sum(C390 < 120 * 60)/n(), C490 = sum(C490 < 180 * 60)/n()) %>%
+      mutate(Overall = (C1Mean + C2Mean + C390 + C490)/4) %>%
+      arrange(-Overall)
+  })
 }
