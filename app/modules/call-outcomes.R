@@ -4,7 +4,7 @@ callOutcomesUi <- function(id) {
   tagList(
     sidebarLayout(
       sidebarPanel(
-        dateRangeInput(ns("date"), "Search Period", format = "m/yyyy", start = today() - dyears())
+        monthRangeUi(ns("month"))
       ),
       mainPanel(
         h1("Call outcomes by ambulance service"),
@@ -30,12 +30,16 @@ callOutcomesUi <- function(id) {
 }
 
 callOutcomes <- function(input, output, session, ambsys) {
+  
+  monthRange <- callModule(monthRange, "month", ambsys %>% drop_na(A7,A56,A17,A53,A54,A55,A18,A19,A21,A22) %>% pull(Date))
+  
   data <- reactive({
-    ambsys %>% filter(Date >= input$date[1], Date <= input$date[2])
+    ambsys %>% filter(Date >= monthRange$start(), Date <= monthRange$end())
   })
   
   output$hearTreat <- renderPlotly({
     data() %>%
+      drop_na(A17, A7, A19, A22, A7, A18, A21) %>%
       group_by(Ambulance.Service) %>%
       summarise(
         HearTreat = sum(A17)/sum(A7)*100,
@@ -62,6 +66,7 @@ callOutcomes <- function(input, output, session, ambsys) {
   
   output$seeTreat <- renderPlotly({
     data() %>%
+      drop_na(A55, A7) %>%
       group_by(Ambulance.Service) %>%
       summarise(SeeTreat = sum(A55)/sum(A7) * 100) %>%
       plot_ly(

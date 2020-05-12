@@ -4,7 +4,8 @@ responseTimesUi <- function(id) {
   tagList(
     sidebarLayout(
       sidebarPanel(
-        selectInput(ns("category"), "Category", choices = list("Category 1" = 1, "Category 2" = 2, "Category 3" = 3, "Category 4" = 4))
+        selectInput(ns("category"), "Category", choices = list("Category 1" = 1, "Category 2" = 2, "Category 3" = 3, "Category 4" = 4)),
+        monthRangeUi(ns("month"))
       ),
       mainPanel(
         tabsetPanel(
@@ -20,7 +21,8 @@ responseTimesUi <- function(id) {
 responseTimes <- function(input, output, session, ambsys, plt) {
   
   meanResponseTs <- reactive({
-    d <- ambsys %>% group_by(Date, Ambulance.Service)
+    d <- ambsys %>% group_by(Date, Ambulance.Service) %>%
+      filter(Date >= monthRange$start(), Date <= monthRange$end())
     category <- as.integer(input$category)
     if (category == 1) {
       d %>% drop_na(A24, A8) %>% summarise(Response = sum(A24)/sum(A8))
@@ -34,7 +36,8 @@ responseTimes <- function(input, output, session, ambsys, plt) {
   })
   
   response90Ts <- reactive({
-    d <- ambsys %>% group_by(Date, Ambulance.Service)
+    d <- ambsys %>% group_by(Date, Ambulance.Service) %>%
+      filter(Date >= monthRange$start(), Date <= monthRange$end())
     category <- as.integer(input$category)
     if (category == 1) {
       d %>% drop_na(A26) %>% summarise(Response = first(A26))
@@ -88,7 +91,6 @@ responseTimes <- function(input, output, session, ambsys, plt) {
   
   output$response90Plot <- renderPlot({
     df <- response90Ts()
-    print(df)
     p <- plt +
       geom_col(aes(Date, Response, fill=Ambulance.Service), df, show.legend = FALSE) +
       scale_y_time(limits = c(0, max(df$Response))) +
@@ -99,4 +101,6 @@ responseTimes <- function(input, output, session, ambsys, plt) {
     }
     p
   })
+  
+  monthRange <- callModule(monthRange, "month", ambsys %>% drop_na(A24,A8,A30,A10,A33,A11,A36,A12) %>% pull(Date))
 }
