@@ -1,18 +1,12 @@
 # UI
-stemiUi <- function(id, startDate, endDate) {
+stemiUi <- function(id) {
   ns <- NS(id)
   
   tagList(
     h1("STEMI by ambulance service"),
     sidebarLayout(
       sidebarPanel(
-        dateRangeInput(
-          ns("date"),
-          "Search Period",
-          start=startDate,
-          end=endDate,
-          format = "m/yyyy"
-        )
+        monthRangeUi(ns("month"))
       ),
       mainPanel(
         tabsetPanel(
@@ -44,10 +38,13 @@ stemiUi <- function(id, startDate, endDate) {
 
 # Server
 stemi <- function(input, output, session, ambco) {
+  
+  monthRange <- callModule(monthRange, "month", ambco %>% drop_na(M1n, M3n, M3m) %>% pull(Date))
+  
   ppci <- reactive({
     ambco %>%
       drop_na(M1n,M3n,M3m) %>%
-      filter(Date >= input$date[1], Date <= input$date[2]) %>%
+      filter(Date >= monthRange$start(), Date <= monthRange$end()) %>%
       group_by(Ambulance.Service) %>%
       summarise(
         Ppci = sum(M3n),

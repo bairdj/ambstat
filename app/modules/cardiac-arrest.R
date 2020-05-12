@@ -1,18 +1,12 @@
 # UI
-cardiacArrestUi <- function(id, startDate, endDate) {
+cardiacArrestUi <- function(id) {
   ns <- NS(id)
   
   tagList(
     h1("Cardiac arrest by ambulance service"),
     sidebarLayout(
       sidebarPanel(
-        dateRangeInput(
-          ns("date"),
-          "Search Period",
-          start=min(ambco$Date),
-          end=max(ambco$Date),
-          startview="year",
-          format="m/yyyy")
+        monthRangeUi(ns("month"))
       ),
       mainPanel(
         tabsetPanel(
@@ -45,8 +39,10 @@ cardiacArrestUi <- function(id, startDate, endDate) {
 # Server
 cardiacArrest <- function(input, output, session, ambco) {
   
+  monthRange <- callModule(monthRange, "month", ambco %>% drop_na(R1r, R1n, R2n, R2r, R3s, R3n, R4n, R4s) %>% pull(Date))
+  
   data <- reactive({
-      ambco %>% filter(Date >= input$date[1], Date <= input$date[2])
+      ambco %>% filter(Date >= monthRange$start(), Date <= monthRange$end())
   })
   
   sankey <- reactive({
