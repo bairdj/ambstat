@@ -2,6 +2,7 @@
 version: 2.1
 jobs:
   build_docker:
+    machine: true
     steps:
       - setup_remote_docker
       - run: docker build -t bairdj/ambstat:$CIRCLE_BRANCH
