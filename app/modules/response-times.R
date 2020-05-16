@@ -10,7 +10,7 @@ responseTimesUi <- function(id) {
       mainPanel(
         tabsetPanel(
           tabPanel("Mean", plotOutput(ns("meanResponsePlot"), height=600)),
-          tabPanel("90% percentile", plotOutput(ns("response90Plot"), height=600)),
+          tabPanel("90th centile", plotOutput(ns("response90Plot"), height=600)),
           tabPanel("Monthly Performance", p("Proportion of months where performance target met"), tableOutput(ns("monthlyPerformance")))
         ),
         plotOutput(ns("responsePlot"))
