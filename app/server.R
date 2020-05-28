@@ -10,4 +10,5 @@ server <- function(input, output) {
   cardiacArrest <- callModule(cardiacArrest, "cardiacArrest", ambco)
   callOutcomes <- callModule(callOutcomes, "callOutcomes", ambsys)
   responseTimes <- callModule(responseTimes, "responseTimes", ambsys, plt)
+  calls <- callModule(calls, "calls", ambsys)
 }
