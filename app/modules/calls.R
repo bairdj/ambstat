@@ -1,17 +1,24 @@
 callsUi <- function(id) {
   ns <- NS(id)
   
-  sidebarLayout(
-    sidebarPanel(
-      monthRangeUi(ns("month"))
-    ),
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Calls", plotlyOutput(ns('contacts'))),
-        tabPanel("Answer Times", plotlyOutput(ns('answer_times')))
+  tagList(
+    h2("Calls"),
+    sidebarLayout(
+      sidebarPanel(
+        monthRangeUi(ns("month"))
+      ),
+      mainPanel(
+        tabsetPanel(
+          tabPanel("Calls", plotlyOutput(ns('contacts'))),
+          tabPanel("Answer Times", plotlyOutput(ns('answer_times')))
+        )
       )
-    )
+    ),
+    h2("Call rate"),
+    plotOutput(ns('population'))
   )
+  
+  
 }
 
 calls <- function(input, output, session, ambsys) {
@@ -52,5 +59,32 @@ calls <- function(input, output, session, ambsys) {
           title = list(text = "Ambulance Service")
         )
       )
+  })
+  
+  output$population <- renderPlot({
+    population <- readxl::read_excel('data/ccg-population.xlsx', sheet = "Mid-2018 Persons", skip = 6) %>%
+      select(Area.Code = `Area Codes`, Population = `All Ages`) %>%
+      drop_na()
+    
+    codes <- readr::read_csv('data/nhs-region-codes.csv', col_types = c('nccc')) %>%
+      select(Area.Code = NHSER19CD, Region = NHSER19CDH, Label = NHSER19NM) %>%
+      inner_join(population)
+    
+    call_rate <- ambsys %>%
+      drop_na(A0) %>%
+      filter(Year == 2018) %>%
+      group_by(Region) %>%
+      summarise(Calls = sum(A0)) %>%
+      inner_join(codes) %>%
+      mutate(CallsPerPop = Calls/Population, CallRate = CallsPerPop * 1000) %>%
+      arrange(Label)
+    
+    call_rate
+    
+    ggplot(call_rate, aes(Region,CallRate)) + 
+      geom_col() +
+      scale_x_discrete(labels = pull(call_rate, Label)) +
+      labs(title = "Calls per 1000 population by NHS Region (2018)", caption = "Source: ONS, NHS England") +
+      theme_fivethirtyeight()
   })
 }
