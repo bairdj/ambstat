@@ -28,7 +28,9 @@ callOutcomesUi <- function(id) {
           tabPanel("See & Treat", plotlyOutput(ns("seeTreatTs")))
         )
       )
-    )
+    ),
+    h1("Call categories"),
+    plotOutput(ns("categories"))
   )
 }
 
@@ -143,6 +145,22 @@ callOutcomes <- function(input, output, session, ambsys) {
       layout(
         yaxis = list(title = list(text="%"), rangemode="tozero")
       )
+  })
+  
+  output$categories <- renderPlot({
+    df <- ambsys %>%
+      transmute(Ambulance.Service, C1 = A115, C2 = A119, C3 = A11, C4 = A12) %>%
+      drop_na() %>%
+      group_by(Ambulance.Service) %>%
+      summarise_all(sum) %>%
+      mutate(NonHCP = C1 + C2 + C3 + C4, C1 = C1 / NonHCP, C2 = C2 / NonHCP, C3 = C3 / NonHCP, C4 = C4 / NonHCP) %>%
+      select(-NonHCP) %>%
+      pivot_longer(c(C1, C2, C3, C4), names_to = "Category")
+    plt +
+      geom_col(aes(Category, value, fill = Category), position="dodge", data = df) +
+      facet_wrap(vars(Ambulance.Service)) +
+      labs(title = "Proportion of face to face incidents by category", subtitle="Excluding HCP/IFT and C5 incidents") +
+      theme(legend.position = "none")
   })
   
   
