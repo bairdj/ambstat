@@ -16,14 +16,17 @@ callOutcomesUi <- function(id) {
       )
     ),
     fixedRow(
-      column(offset=4, width=8, h1("Hear & Treat Trend"))
+      column(offset=4, width=8, h1("Trend"))
     ),
     sidebarLayout(
       sidebarPanel(
         selectInput(ns("service"), "Service", service_list)
       ),
       mainPanel(
-        plotlyOutput(ns("ts"))
+        tabsetPanel(
+          tabPanel("Hear & Treat", plotlyOutput(ns("hearTreatTs"))),
+          tabPanel("See & Treat", plotlyOutput(ns("seeTreatTs")))
+        )
       )
     )
   )
@@ -104,7 +107,7 @@ callOutcomes <- function(input, output, session, ambsys) {
     )
   })
   
-  output$ts <- renderPlotly({
+  output$hearTreatTs <- renderPlotly({
     df <- ambsys
     if (input$service != "All") {
       df <- df %>% filter(Ambulance.Service == input$service)
@@ -122,6 +125,23 @@ callOutcomes <- function(input, output, session, ambsys) {
         yaxis = list(
           title = list(text="%")
         )
+      )
+  })
+  
+  output$seeTreatTs <- renderPlotly({
+    df <- ambsys
+    if (input$service != "All") {
+      df <- df %>% filter(Ambulance.Service == input$service)
+    }
+    df %>%
+      drop_na(A55, A7) %>%
+      group_by(Date) %>%
+      summarise(
+        SeeTreat = sum(A55)/sum(A7) * 100
+      ) %>%
+      plot_ly(x=~Date, y=~SeeTreat, name="See & Treat", mode="lines", type="scatter") %>%
+      layout(
+        yaxis = list(title = list(text="%"), rangemode="tozero")
       )
   })
   
