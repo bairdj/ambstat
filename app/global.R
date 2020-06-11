@@ -15,6 +15,10 @@ source("./loaders.R", local = TRUE)
 ambsys <- load_ambsys()
 ambco <- load_ambco()
 
+plt <- ggplot() +
+  scale_colour_fivethirtyeight() +
+  labs(caption = "Source: ambstat.uk, NHS England Ambulance Quality Indicators")
+
 source("./modules/stemi.R")
 source("./modules/cardiac-arrest.R")
 source("./modules/call-outcomes.R")
