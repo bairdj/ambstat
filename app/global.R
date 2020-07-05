@@ -8,6 +8,8 @@ library(readr)
 library(stringr)
 library(ggplot2)
 library(ggthemes)
+library(gt)
+library(paletteer)
 
 service_list = c("All", "EAST MIDLANDS", "EAST OF ENGLAND", "ISLE OF WIGHT", "LONDON", "NORTH EAST", "NORTH WEST", "SOUTH CENTRAL", "SOUTH WESTERN", "WEST MIDLANDS", "YORKSHIRE")
 

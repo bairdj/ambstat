@@ -9,7 +9,9 @@ packages <- c(
   "stringr",
   "ggplot2",
   "ggthemes",
-  "shinythemes"
+  "shinythemes",
+  "gt",
+  "paletteer"
 )
 
 install.packages(packages)

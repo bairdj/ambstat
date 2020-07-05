@@ -11,7 +11,7 @@ responseTimesUi <- function(id) {
         tabsetPanel(
           tabPanel("Mean", plotOutput(ns("meanResponsePlot"), height=600)),
           tabPanel("90th centile", plotOutput(ns("response90Plot"), height=600)),
-          tabPanel("Monthly Performance", p("Proportion of months where performance target met"), tableOutput(ns("monthlyPerformance")))
+          tabPanel("Monthly Performance", gt_output(ns("monthlyPerformance")))
         ),
         plotOutput(ns("responsePlot"))
       )
@@ -109,7 +109,8 @@ responseTimes <- function(input, output, session, ambsys, plt) {
   
   monthRange <- callModule(monthRange, "month", ambsys %>% drop_na(A24,A8,A30,A10,A33,A11,A36,A12) %>% pull(Date))
   
-  output$monthlyPerformance <- renderTable({
+  
+  output$monthlyPerformance <- render_gt({
     req(monthRange$start())
     req(monthRange$end())
     ambsys %>% drop_na(A24,A8,A30,A10, A38, A35) %>%
@@ -117,8 +118,32 @@ responseTimes <- function(input, output, session, ambsys, plt) {
       group_by(Ambulance.Service, Date) %>%
       summarise(C1Mean = first(A24)/first(A8), C2Mean = first(A30)/first(A10), C390 = first(A35), C490 = first(A38)) %>%
       group_by(Ambulance.Service) %>%
-      summarise(C1Mean = sum(C1Mean < 7*60)/n(), C2Mean = sum(C2Mean < 18*60)/n(), C390 = sum(C390 < 120 * 60)/n(), C490 = sum(C490 < 180 * 60)/n()) %>%
-      mutate(Overall = (C1Mean + C2Mean + C390 + C490)/4) %>%
-      arrange(-Overall)
+      summarise(
+        n = n(),
+        C1 = sum(C1Mean < 7*60),
+        C2 = sum(C2Mean < 18*60),
+        C3 = sum(C390 < 120 * 60),
+        C4 = sum(C490 < 180 *60),
+        PC1 = C1/n,
+        PC2 = C2/n,
+        PC3 = C3/n,
+        PC4 = C4/n,
+        Overall = C1 + C2 + C3 + C4,
+        POverall = Overall/(n*4)
+        ) %>%
+      gt(rowname_col = "Ambulance.Service") %>%
+      tab_header('Monthly performance target achievement', subtitle = paste(format.Date(monthRange$start(), "%B %Y"), "-", format.Date(monthRange$end(), "%B %Y"))) %>%
+      tab_spanner("Category 1", vars(C1, PC1)) %>%
+      tab_spanner("Category 2", vars(C2, PC2)) %>%
+      tab_spanner("Category 3", vars(C3, PC3)) %>%
+      tab_spanner("Category 4", vars(C4, PC4)) %>%
+      tab_spanner("Overall", vars(Overall, POverall)) %>%
+      fmt_percent(starts_with("P"), decimals = 1) %>%
+      data_color(starts_with("P"), colors = scales::col_numeric(paletteer::paletteer_d("ggsci::green_material") %>% as.character(), domain = c(0,1))) %>%
+      cols_label(n = "Months", C1 = "Achieved", C2 = "Achieved", C3 = "Achieved", C4 = "Achieved", Overall = "Achieved", PC1 = "%", PC2 = "%", PC3 = "%", PC4 = "%", POverall="%") %>%
+      tab_footnote("Mean response < 7 minutes", cells_column_spanners("Category 1")) %>%
+      tab_footnote("Mean response < 18 minutes", cells_column_spanners("Category 2")) %>%
+      tab_footnote("90th centile response < 120 minutes", cells_column_spanners("Category 3")) %>%
+      tab_footnote("90th centile response < 180 minutes", cells_column_spanners("Category 4"))
   })
 }
