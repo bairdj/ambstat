@@ -14,8 +14,9 @@ library(paletteer)
 service_list = c("All", "EAST MIDLANDS", "EAST OF ENGLAND", "ISLE OF WIGHT", "LONDON", "NORTH EAST", "NORTH WEST", "SOUTH CENTRAL", "SOUTH WESTERN", "WEST MIDLANDS", "YORKSHIRE")
 
 source("./loaders.R", local = TRUE)
-ambsys <- load_ambsys()
-ambco <- load_ambco()
+load("cached.Rdata")
+# ambsys <- load_ambsys()
+# ambco <- load_ambco()
 
 plt <- ggplot() +
   scale_colour_fivethirtyeight() +

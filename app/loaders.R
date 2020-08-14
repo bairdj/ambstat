@@ -32,7 +32,7 @@ ambsys_cols <- cols_only(
 )
 
 load_ambsys <- function() {
-  return(read_csv('AmbSYS-up-to-May-2020-CSV.csv', col_types = ambsys_cols, na = c('.')) %>%
+  return(read_csv('AmbSYS-to-July-2020.csv', col_types = ambsys_cols, na = c('.')) %>%
            ambstatify())
 }
 
@@ -57,7 +57,7 @@ ambco_cols <- cols_only(
 
 
 load_ambco <- function() {
-  return(read_csv('AmbCO-up-to-Nov-2019-CSV.csv', na = c('.'), col_types = ambco_cols) %>%
+  return(read_csv('AmbCO-up-to-Dec-2019.csv', na = c('.'), col_types = ambco_cols) %>%
            ambstatify())
 }
 
@@ -67,4 +67,10 @@ ambstatify <- function(.data) {
            mutate(ym = Year + (Month - 1) * 1/12) %>% # For use with xts yearmon
            mutate(Date = ymd(paste(Year, Month, "01", sep = "-"))) %>%
            rename(Ambulance.Service = `Org Name`))
+}
+
+build_cache <- function() {
+  ambco <- load_ambco()
+  ambsys <- load_ambsys()
+  save(ambco, ambsys, file = "cached.Rdata")
 }
