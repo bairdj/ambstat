@@ -11,10 +11,20 @@ cardiacArrestUi <- function(id) {
       mainPanel(
         tabsetPanel(
           tabPanel("ROSC/Survival (all)", plotlyOutput(ns("compare_rosc_all"))),
-          tabPanel("ROSC/Survival (Utstein)", plotlyOutput(ns("compare_rosc_utstein"))),
-          tabPanel("Outcomes", plotlyOutput(ns("rosc_sankey")), textOutput(ns('sankey_period')))
+          tabPanel("ROSC/Survival (Utstein)", plotlyOutput(ns("compare_rosc_utstein")))
         ),
         p("Only months with complete data are included. This may not reflect the full specified search period.")
+      )
+    ),
+    h1("Cardiac arrest outcomes"),
+    sidebarLayout(
+      sidebarPanel(
+        selectInput(ns("outcomeService"), "Ambulance Service", service_list),
+        monthRangeUi(ns("outcomeMonth"))
+      ),
+      mainPanel(
+        plotlyOutput(ns("rosc_sankey")),
+        textOutput(ns("sankey_period"))
       )
     ),
     h1("ROSC Trend"),
@@ -39,16 +49,24 @@ cardiacArrestUi <- function(id) {
 # Server
 cardiacArrest <- function(input, output, session, ambco) {
   
-  monthRange <- callModule(monthRange, "month", ambco %>% drop_na(R1r, R1n, R2n, R2r, R3s, R3n, R4n, R4s) %>% pull(Date))
+  serviceRange <- callModule(monthRange, "month", ambco %>% drop_na(R1r, R1n, R2n, R2r, R3s, R3n, R4n, R4s) %>% pull(Date))
+  outcomeRange <- callModule(monthRange, "outcomeMonth", ambco %>% drop_na(R0n, R1n, R1r, R3s, R3n) %>% pull(Date))
   
   data <- reactive({
-      req(monthRange$start())
-      req(monthRange$end())
-      ambco %>% filter(Date >= monthRange$start(), Date <= monthRange$end())
+      req(serviceRange$start())
+      req(serviceRange$end())
+      ambco %>% filter(Date >= serviceRange$start(), Date <= serviceRange$end())
   })
   
   sankey <- reactive({
-    data() %>% drop_na(R0n, R1n, R1r, R3s, R3n)
+    req(outcomeRange$start())
+    req(outcomeRange$end())
+    outcome <- ambco %>% drop_na(R0n, R1n, R1r, R3s, R3n) %>% filter(Date >= outcomeRange$start(), Date <= outcomeRange$end())
+    if(input$outcomeService != 'All') {
+      outcome %>% filter(Ambulance.Service == input$outcomeService)
+    } else {
+      outcome
+    }
   })
   
   trend <- reactive({
