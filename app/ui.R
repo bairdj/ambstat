@@ -6,6 +6,7 @@ navbarPage(fluid = TRUE, theme=shinytheme("flatly"), collapsible = TRUE,
   tabPanel("STEMI", stemiUi("stemi")),
   tabPanel("Call Outcomes", callOutcomesUi("callOutcomes")),
   tabPanel("Response Times", responseTimesUi("responseTimes")),
+  tabPanel("Activity", activityUi("activity")),
   footer = tagList(
     wellPanel(
       p(
