@@ -1,6 +1,7 @@
 ambsys_cols <- cols_only(
   Year = col_integer(),
   Month = col_integer(),
+  Region = col_character(),
   `Org Name` = col_character(),
   `Org Code` = col_character(),
   A53 = col_integer(),
@@ -12,6 +13,7 @@ ambsys_cols <- cols_only(
   A19 = col_integer(),
   A21 = col_integer(),
   A22 = col_integer(),
+  A0 = col_integer(),
   A7 = col_integer(),
   A8 = col_integer(),
   A9 = col_integer(),
