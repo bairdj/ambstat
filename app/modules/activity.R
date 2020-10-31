@@ -29,8 +29,9 @@ activity <- function(input, output, session, ambsys) {
     ambsys %>%
       group_by(Year, Month) %>%
       summarise(Contacts = sum(A0)) %>%
-      mutate(Year = as.factor(Year)) %>%
-      plot_ly(x=~Month,y=~Contacts,color=~Year,mode='lines+markers',type='scatter')
+      mutate(Year = as.factor(Year), Month = factor(Month, levels=1:12, labels=month.abb)) %>%
+      plot_ly(x=~Month,y=~Contacts,color=~Year,mode='lines+markers',type='scatter') %>%
+      layout(title = "Contacts per year")
   })
   
   output$incidents <- renderPlotly({
@@ -45,7 +46,7 @@ activity <- function(input, output, session, ambsys) {
     ambsys %>%
       group_by(Year, Month) %>%
       summarise(Incidents = sum(A7)) %>%
-      mutate(Year=as.factor(Year)) %>%
+      mutate(Year=as.factor(Year), Month=factor(Month, levels=1:12, labels=month.abb)) %>%
       plot_ly(x=~Month, y=~Incidents,color=~Year,mode='lines+markers',type='scatter') %>%
       layout(title = "Incidents per year")
   })
