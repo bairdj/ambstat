@@ -166,7 +166,13 @@ cardiacArrest <- function(input, output, session, ambco) {
         )
       )
   })
-  output$ts_table <- renderTable({
-    trend()
+  output$ts_table <- gt::render_gt({
+    trend() %>%
+      gt() %>%
+      tab_spanner("Utstein", contains("Utstein")) %>%
+      tab_spanner("All", contains("All")) %>%
+      fmt_percent(vars(RoscUtstein,RollingAll,RollingUtstein,RoscAll), scale_values = FALSE) %>%
+      cols_label(RoscUtstein = "ROSC", RollingAll = "12m ROSC", RollingUtstein = "12m ROSC", RoscAll = "ROSC")   %>%
+      fmt_date(vars(Date), date_style = 7)
   })
 }
