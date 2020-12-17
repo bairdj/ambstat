@@ -34,7 +34,7 @@ ambsys_cols <- cols_only(
 )
 
 load_ambsys <- function() {
-  return(read_csv('AmbSYS-to-20201031.csv', col_types = ambsys_cols, na = c('.')) %>%
+  return(read_csv('AmbSYS-up-to-20201130.csv', col_types = ambsys_cols, na = c('.')) %>%
            ambstatify())
 }
 
@@ -59,7 +59,7 @@ ambco_cols <- cols_only(
 
 
 load_ambco <- function() {
-  return(read_csv('AmbCO-up-to-20200630.csv', na = c('.'), col_types = ambco_cols) %>%
+  return(read_csv('AmbCO-up-to-20200731.csv', na = c('.'), col_types = ambco_cols) %>%
            ambstatify())
 }
 
