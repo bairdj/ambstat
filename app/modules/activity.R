@@ -22,7 +22,19 @@ activity <- function(input, output, session, ambsys) {
       group_by(Ambulance.Service) %>%
       select(Ambulance.Service, Date, A0) %>%
       plot_ly(x=~Date, y=~A0, mode='lines', color=~Ambulance.Service, type='scatter') %>%
-      layout(yaxis = list(title="Contacts"), title="Contacts per month")
+      layout(
+        yaxis = list(title="Contacts"),
+        title="Contacts per month",
+        xaxis = list(
+          rangeselector = list(
+            buttons = list(
+              list(count=6,label="6M",step="month",stepmode="backward"),
+              list(count=12,label="12M",step="month",stepmode="backward"),
+              list(step="all",label="All")
+            )
+          )
+        )
+      )
   })
   
   output$contactsMonth <- renderPlotly({
