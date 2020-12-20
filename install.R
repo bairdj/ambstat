@@ -11,7 +11,8 @@ packages <- c(
   "ggthemes",
   "shinythemes",
   "gt",
-  "paletteer"
+  "paletteer",
+  "readxl"
 )
 
 install.packages(packages)
