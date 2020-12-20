@@ -16,11 +16,11 @@ tagList(
              id = "asNavbar",
              windowTitle = "AmbStat: English ambulance statistics",
              "AmbStat",
-             tabPanel("Cardiac Arrest", cardiacArrestUi("cardiacArrest")),
-             tabPanel("STEMI", stemiUi("stemi")),
-             tabPanel("Call Outcomes", callOutcomesUi("callOutcomes")),
-             tabPanel("Response Times", responseTimesUi("responseTimes")),
-             tabPanel("Activity", activityUi("activity")),
+             tabPanel("Cardiac Arrest", value="/cardiac-arrest", cardiacArrestUi("cardiacArrest")),
+             tabPanel("STEMI", value="/stemi", stemiUi("stemi")),
+             tabPanel("Call Outcomes", value="/call-outcomes", callOutcomesUi("callOutcomes")),
+             tabPanel("Response Times", value="/response-times", responseTimesUi("responseTimes")),
+             tabPanel("Activity", value="/activity", activityUi("activity")),
              footer = tagList(
                wellPanel(
                  p(

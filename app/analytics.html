@@ -8,6 +8,7 @@
   gtag('config', '{{ ID }}');
   
   $(document).on('click', '#asNavbar a', (event) => {
-    gtag('config', '{{ ID }}', {'page_path': event.target.innerText})
+    gtag('config', '{{ ID }}', {'page_path': $(event.target).data('value')});
+    
   })
 </script>
