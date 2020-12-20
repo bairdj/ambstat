@@ -13,6 +13,7 @@ tagList(
   tags$head(analyticsTag()),
   tags$head(includeHTML('meta.html')),
   navbarPage(fluid = TRUE, theme=shinytheme("flatly"), collapsible = TRUE,
+             id = "asNavbar",
              windowTitle = "AmbStat: English ambulance statistics",
              "AmbStat",
              tabPanel("Cardiac Arrest", cardiacArrestUi("cardiacArrest")),
