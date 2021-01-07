@@ -1,3 +1,7 @@
+timeLabeller <- function(breaks) {
+  round_hms(breaks, 1)
+}
+
 responseTimesUi <- function(id) {
   ns <- NS(id)
   
@@ -85,7 +89,7 @@ responseTimes <- function(input, output, session, ambsys, plt) {
     df <- meanResponseTs()
     p <- plt + 
       geom_col(aes(Date, Response, fill=Ambulance.Service), df, show.legend = FALSE) +
-      scale_y_time(limits = c(0, max(df$Response))) +
+      scale_y_time(limits = c(0, NA), labels = timeLabeller) +
       labs(title = paste("Mean category", input$category, "response time"), y = "Response time (minutes)") +
       facet_wrap(~Ambulance.Service)
     if (!is.na(meanTarget())) {
@@ -98,7 +102,7 @@ responseTimes <- function(input, output, session, ambsys, plt) {
     df <- response90Ts()
     p <- plt +
       geom_col(aes(Date, Response, fill=Ambulance.Service), df, show.legend = FALSE) +
-      scale_y_time(limits = c(0, max(df$Response))) +
+      scale_y_time(limits = c(0, NA), labels = timeLabeller) +
       labs(title = paste("Category", input$category, "90th centile response time")) +
       facet_wrap(~Ambulance.Service)
     if (!is.na(target90())) {
