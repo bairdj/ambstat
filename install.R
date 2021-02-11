@@ -12,7 +12,8 @@ packages <- c(
   "shinythemes",
   "gt",
   "paletteer",
-  "readxl"
+  "readxl",
+  "hms"
 )
 
 install.packages(packages)

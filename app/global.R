@@ -10,6 +10,7 @@ library(ggplot2)
 library(ggthemes)
 library(gt)
 library(paletteer)
+library(hms)
 
 service_list = c("All", "EAST MIDLANDS", "EAST OF ENGLAND", "ISLE OF WIGHT", "LONDON", "NORTH EAST", "NORTH WEST", "SOUTH CENTRAL", "SOUTH WESTERN", "WEST MIDLANDS", "YORKSHIRE")
 
